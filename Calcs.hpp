@@ -1,4 +1,6 @@
+#pragma once
 #include <SFML/Graphics.hpp>
+#define _USE_MATH_DEFINES
 #include <math.h>
 
 sf::Vector2f xy_to_ra(sf::Vector2f XY);
