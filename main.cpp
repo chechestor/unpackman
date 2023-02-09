@@ -11,10 +11,10 @@
 int main()
 {
     Game * game = new Game();
+
     while (game->running())
     {
         game->update();  // calc new state of game objects
-        game->render();  // draw new frame state in window
     }
     return 0;
 }
