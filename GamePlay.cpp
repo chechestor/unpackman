@@ -25,7 +25,7 @@ GamePlay::~GamePlay() {
 /// @brief Init game start variables and global game settings
 void GamePlay::init_variables()
 {
-    this->bg_color = sf::Color(0x30, 0x10, 0x05);  // dark drown
+    this->set_bg_color(sf::Color(0x30, 0x10, 0x05));  // dark drown
     this->frame_limit = 100;  // frames per s
     this->cursor_size_px = 30;  // px, sprite square 
     this->enemy_size_px = 30;  // px, sprite square
@@ -40,35 +40,13 @@ const bool GamePlay::running() const
     return this->window->isOpen();
 }
 
-/// @brief pole keyboard events, do actions
-/*void GamePlay::poleEvents()
-{
-    while (this->window->pollEvent(this->ev))
-    {
-        switch (this->ev.type)
-        {
-        case sf::Event::Closed:
-            this->window->close();
-            break;
-        case sf::Event::KeyPressed:  // клавиатура и мышь, нажатие кнопки
-            //
-            break;
-        case sf::Event::KeyReleased:  // клавиатура и мышь, отпускание кнопки
-            //
-            break;
-        
-        default:
-            break;
-        }
-    }
-}
-*/
-
 /// @brief Update game state on each frame, calculate all game objects internal states.
 void GamePlay::update()
 {
     GameScene::update();
 
+    this->window->setMouseCursorVisible(false);
+    
     std::cout << sf::Mouse::getPosition(*this->window).x << "x" << sf::Mouse::getPosition(*this->window).y << "\n";
     std::cout << std::flush;
     this->update_all_enemy_actors();
@@ -80,7 +58,6 @@ void GamePlay::render()
 {
     GameScene::render();
     
-    this->window->clear(sf::Color(this->bg_color));
     this->render_all_enemy_actors();
     this->cursor->render(this->window);
     this->window->display();
@@ -128,7 +105,6 @@ void  GamePlay::render_all_enemy_actors()
 /// @brief Create all enemies on the start of the game
 void  GamePlay::create_actors()
 {
-
     //create 10 Enemies
     for (int i = 0; i < this->max_enemies_qty; i++)
     {
@@ -150,7 +126,6 @@ void  GamePlay::create_actors()
         {
             position = sf::Vector2f(W, perimeter_position - W - H - W);
         }
-        // TODO: model Big Bang: position = sf::Vector2f(float(W/2),float(H/2));
 
         // random direction ov velocity vector
         float angle = ((rand() % 1024 ) * 2 * M_PI) / 1024;
@@ -163,4 +138,32 @@ void  GamePlay::create_actors()
         this->add_enemy_actor(actor);
     }
 
+}
+
+/// @brief pole keyboard events, do actions
+void GamePlay::poleEvents()
+{
+    while (this->window->pollEvent(this->ev))
+    {
+        switch (this->ev.type)
+        {
+            case sf::Event::Closed:
+                this->scene_status = SceneStatus::ENDING;
+                this->window->close();  //TODO: сделать выход из сцены со статусом HALT
+                break;
+            case sf::Event::KeyPressed:  // клавиатура и мышь, нажатие кнопки
+                {
+                    if (this->ev.key.code == sf::Keyboard::Escape)
+                    {
+                        this->scene_status = SceneStatus::ENDING;
+                    }
+                }
+                break;
+            case sf::Event::KeyReleased:  // клавиатура и мышь, отпускание кнопки
+                //
+                break;
+            default:
+                break;
+        }
+    }
 }

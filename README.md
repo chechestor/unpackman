@@ -19,5 +19,6 @@
  * [x] cursor view
  * [ ] overlap actions
  * [ ] time (scores) count
- * [ ] game scenes (splash screen -> game -> view acivement)
+ * [x] game scenes (splash screen -> game)
+ * [ ] game scenes (game -> view acivement)
  * [ ] music in scenes and actions

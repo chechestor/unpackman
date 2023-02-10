@@ -24,12 +24,11 @@ public:
     GamePlay(sf::RenderWindow * window, unsigned int frame_limit);
     virtual ~GamePlay();
     const bool running() const;
-    //void poleEvents();
+    void poleEvents();
     void update();
     void render();
 
 private:
-
     // Game scene settings
     unsigned int cursor_size_px;  ///< Cursor size X*Y
     unsigned int enemy_size_px;  ///< Enemy size X*Y
@@ -42,7 +41,6 @@ private:
     Cursor * cursor;  ///< Actor who represents cursor
 
     void init_variables();
-//    void init_window();
     void update_all_enemy_actors();
     void add_enemy_actor(Actor * actor);
     void render_all_enemy_actors();
