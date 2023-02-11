@@ -11,6 +11,6 @@
 class Enemy : public Actor
 {
 public:
-    Enemy (unsigned int frame_limit, sf::Vector2f & position, sf::Vector2f & size, sf::Vector2f & velocity);
+    Enemy (sf::RenderWindow * window, int frame_limit, sf::Vector2f & position, sf::Vector2f & size, sf::Vector2f & velocity);
     ~Enemy () {};
 };

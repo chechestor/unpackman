@@ -1,16 +1,21 @@
 #include "Actor.hpp"
 #include "Calcs.hpp"
 
+Actor::Actor (sf::RenderWindow * window)
+{
+    this->window = window;
+}
+
 /// @brief Update the actor state
 /// @param window Pointer to render game window
-void Actor::update(sf::RenderWindow * window)
+void Actor::update()
 {
     //new positions
     this->position += this->frame_velocity;
-    if ( (this->position.x >= window->getSize().x) && (velocity.x >0) )  {this->set_velocity( -velocity.x, velocity.y);}
+    if ( (this->position.x >= this->window->getSize().x) && (velocity.x >0) )  {this->set_velocity( -velocity.x, velocity.y);}
     if ( (this->position.x <=0 ) && (velocity.x < 0) )  {this->set_velocity( -velocity.x, velocity.y);}
 
-    if ( (this->position.y >= window->getSize().y) && (velocity.y >0) )  {this->set_velocity( velocity.x, -velocity.y);}
+    if ( (this->position.y >= this->window->getSize().y) && (velocity.y >0) )  {this->set_velocity( velocity.x, -velocity.y);}
     if ( (this->position.y <=0 ) && (velocity.y < 0) )  {this->set_velocity( velocity.x, -velocity.y);}
 
     this->sprite_update();
@@ -18,9 +23,9 @@ void Actor::update(sf::RenderWindow * window)
 
 /// @brief Draw actor on game field
 /// @param window Pointer to render game window
-void Actor::render (sf::RenderWindow * window)
+void Actor::render ()
 {
-    this->sprite_render(window);
+    this->sprite_render(this->window);
 }
 
 /// @brief Set a new position of object on game field
@@ -146,7 +151,6 @@ void Actor::sprite_update()
 /// @param render_window Pointer to game window
 void Actor::sprite_render(sf::RenderWindow * render_window)
 {
-
     auto size = sf::Vector2f(this->get_size().x, this->get_size().y);
     this->sprite.setScale(this->get_size() / float(this->sprite_height));
     

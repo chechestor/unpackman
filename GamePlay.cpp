@@ -1,25 +1,28 @@
-#include "GamePlay.hpp"
 #include <iostream>
 #include <math.h>
+#include "GamePlay.hpp"
+#include "Calcs.hpp"
 
 /// @brief Class constructor
 GamePlay::GamePlay(sf::RenderWindow * window, unsigned int frame_limit): GameScene(window, frame_limit){
     this->init_variables();
     this->create_actors();
-    this->cursor = new Cursor(this->frame_limit, this->cursor_size_px);
+    this->cursor = new Cursor(this->window, this->frame_limit, this->cursor_size_px);
+    this->timer = new Timer(this->window);
 };
 
 /// @brief Class descructor
 GamePlay::~GamePlay() {
-
-    delete this->window;
-    delete this->cursor;
     //delete all actors
     for (auto actor : this->enemy_actors)
     {
         delete actor;
     }
     this->enemy_actors.clear();
+    
+    delete this->timer;
+    delete this->cursor;
+    delete this->window;
 };
 
 /// @brief Init game start variables and global game settings
@@ -31,6 +34,8 @@ void GamePlay::init_variables()
     this->enemy_size_px = 30;  // px, sprite square
     this->max_enemies_qty = 30;  // Enemies qty on game field
     this->enemy_speed = 130; //px/s
+
+    this->game_failed = false;  // true, when pacmen overlap ghost
 }
 
 /// @brief Check is game running
@@ -43,14 +48,27 @@ const bool GamePlay::running() const
 /// @brief Update game state on each frame, calculate all game objects internal states.
 void GamePlay::update()
 {
+    if (this->get_status() == GameScene::SceneStatus::START)
+    {
+        this->timer->start();
+    }
     GameScene::update();
 
-    this->window->setMouseCursorVisible(false);
+    //this->window->setMouseCursorVisible(false);  //TODO move to START sctions
     
     std::cout << sf::Mouse::getPosition(*this->window).x << "x" << sf::Mouse::getPosition(*this->window).y << "\n";
     std::cout << std::flush;
     this->update_all_enemy_actors();
-    this->cursor->update(this->window);
+    this->cursor->update();
+
+    if (!this->game_failed)
+    {
+        if (this->overlap_check())
+        {
+            this->game_failed = true;
+            this->overlap_enemies_actions();
+        }
+    }
 }
 
 /// @brief Draw all game objects in window
@@ -59,7 +77,8 @@ void GamePlay::render()
     GameScene::render();
     
     this->render_all_enemy_actors();
-    this->cursor->render(this->window);
+    this->cursor->render();
+    this->timer->render();
     this->window->display();
 }
 
@@ -89,7 +108,7 @@ void  GamePlay::update_all_enemy_actors()
 {
     for (auto actor : this->enemy_actors)
     {
-        actor->update(this->window);
+        actor->update();
     }
 }
 
@@ -98,7 +117,7 @@ void  GamePlay::render_all_enemy_actors()
 {
     for (auto actor : this->enemy_actors)
     {
-        actor->render(this->window);
+        actor->render();
     }
 }
 
@@ -133,7 +152,7 @@ void  GamePlay::create_actors()
 
         auto size = sf::Vector2f(this->enemy_size_px, this->enemy_size_px);
 
-        Enemy * actor = new Enemy(this->frame_limit, position, size, velocity);
+        Enemy * actor = new Enemy(this->window, this->frame_limit, position, size, velocity);
 
         this->add_enemy_actor(actor);
     }
@@ -166,4 +185,38 @@ void GamePlay::poleEvents()
                 break;
         }
     }
+}
+
+bool GamePlay::overlap_check()
+{
+    for (auto enemy : this->enemy_actors)
+    {
+        //
+        auto distance_vector_xy = this->cursor->get_position() - (enemy->get_position());
+        auto distance_vector_ra = xy_to_ra(distance_vector_xy);
+        auto min_distance = (this->enemy_size_px + this->cursor_size_px) / 2;
+        if (distance_vector_ra.x < min_distance)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void GamePlay::overlap_enemies_actions()
+{
+    // stop all enemies
+    for (auto enemy : this->enemy_actors)
+        {
+            enemy->set_velocity(enemy->get_velocity().x / 10000, enemy->get_velocity().y / 10000 );
+            //enemy->set_velocity(0, 0);
+        }
+
+    // detach cursor from sprite
+    this->cursor->cursor_detache();
+
+    // stop counter
+    this->set_bg_color(sf::Color::Blue);
+
+    this->timer->stop();
 }

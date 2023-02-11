@@ -21,10 +21,10 @@
 class Actor
 {
 public:
-    Actor () {};
+    Actor (sf::RenderWindow *);
     ~Actor () {};
-    void update (sf::RenderWindow *);
-    void render (sf::RenderWindow *);
+    void update ();
+    void render ();
 
     void set_position (const sf::Vector2f &); 
     void set_position(const sf::Vector2i &);
@@ -39,6 +39,7 @@ public:
     unsigned int get_frame_limit();
 
 protected:
+    sf::RenderWindow * window;
     sf::Vector2f position = sf::Vector2f(0,0);  ///< [X,Y] position on game field, pixels
     void init_sprite(std::string texture_path, float frames_per_second);
 private:

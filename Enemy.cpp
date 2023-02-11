@@ -8,7 +8,7 @@
 /// @param position Current start position for pacmen. Vector(X,Y) in pixels.
 /// @param size Size of pacmen. Vector(X,Y) in pixels.
 /// @param velocity Vector of pacmens velocity. Vector(X,Y) in pixels per second.
-Enemy::Enemy (unsigned int frame_limit, sf::Vector2f & position, sf::Vector2f & size, sf::Vector2f & velocity)
+Enemy::Enemy (sf::RenderWindow * window, int frame_limit, sf::Vector2f & position, sf::Vector2f & size, sf::Vector2f & velocity) : Actor(window)
 {
     this->set_frame_limit(frame_limit);
     this->set_position(position);

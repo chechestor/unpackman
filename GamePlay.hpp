@@ -17,6 +17,7 @@
 #include "Enemy.hpp"
 #include "Cursor.hpp"
 #include "GameScene.hpp"
+#include "Timer.hpp"
 
 class GamePlay: public GameScene
 {
@@ -27,6 +28,7 @@ public:
     void poleEvents();
     void update();
     void render();
+    Timer * timer;
 
 private:
     // Game scene settings
@@ -48,8 +50,8 @@ private:
     void remove_actor(Actor * actor);
     void create_actors();
     //TODO delete this
-    //bool get_cursor_owerlap_enemies(std::vector<Actor *> & overlaped_enemies);
-    //bool get_cursor_owerlap_enemies(std::vector< std::vector<Actor *>::iterator > & overlaped_enemies);
-    //void owerlap_enemies_actions();
+    bool game_failed;
+    bool overlap_check();
+    void overlap_enemies_actions();  ///< When pacmen bits ghost
 };
 

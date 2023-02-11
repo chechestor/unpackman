@@ -11,8 +11,14 @@
 class Cursor : public Actor
 {
 public:
-    Cursor (unsigned int frame_limit, unsigned int radius_pxl);
+    Cursor (sf::RenderWindow * window, int frame_limit, unsigned int radius_pxl);
     ~Cursor () {};
-    void update(sf::RenderWindow *);
-    void render(sf::RenderWindow *);
+    void update();
+    void render();
+
+    void cursor_attache();
+    void cursor_detache();
+
+private:
+    bool cursor_attached;
 };
