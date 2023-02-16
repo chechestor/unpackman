@@ -20,7 +20,7 @@ jobs:
     - name: configure
       run: ./configure.ps1
     - name: make
-      run: make
+      run: mingw32-make.exe
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
